@@ -1,38 +1,83 @@
-# <a name="title"></a> Kitchen::LxdApi
+# Kitchen::Driver::LxdApi
 
-A Test Kitchen Driver for LxdApi.
+A Test Kitchen Driver for LXD REST API.
 
-## <a name="requirements"></a> Requirements
+## Requirements
 
-**TODO:** document any software or library prerequisites that are required to
-use this driver. Implement the `#verify_dependencies` method in your Driver
-class to enforce these requirements in code, if possible.
+- [Oreno LXD REST API Client](https://github.com/inokappa/oreno_lxdapi)
 
-## <a name="installation"></a> Installation and Setup
+## Installation and Setup
 
-Please read the [Driver usage][driver_usage] page for more details.
+### Install Oreno LXD REST API Client
 
-## <a name="config"></a> Configuration
+```sh
+$ git clone https://github.com/inokappa/oreno_lxdapi.git
+$ cd oreno_lxdapi
+$ bundle install
+$ rake install:local
+```
 
-**TODO:** Write descriptions of all configuration options
+### Install kitchen driver for LXD REST API
 
-### <a name="config-require-chef-omnibus"></a> require\_chef\_omnibus
+```sh
+$ git clone https://github.com/inokappa/kitchen-lxd_api.git
+$ cd kitchen-lxd_api
+$ bundle install
+$ rake install:local
+```
 
-Determines whether or not a Chef [Omnibus package][chef_omnibus_dl] will be
-installed. There are several different behaviors available:
+## Configuration
 
-* `true` - the latest release will be installed. Subsequent converges
-  will skip re-installing if chef is present.
-* `latest` - the latest release will be installed. Subsequent converges
-  will always re-install even if chef is present.
-* `<VERSION_STRING>` (ex: `10.24.0`) - the desired version string will
-  be passed the the install.sh script. Subsequent converges will skip if
-  the installed version and the desired version match.
-* `false` or `nil` - no chef is installed.
+### Create Container image
 
-The default value is unset, or `nil`.
+```sh
+$ lxc remote add images images.linuxcontainers.org
+$ lxc launch images:ubuntu/trusty/amd64 oreno-ubuntu
+$ lxc exec oreno-ubuntu -- apt-get -y install openssh-server
+$ lxc stop oreno-ubuntu
+$ lxc publish oreno-ubuntu --alias=oreno-ubuntu-image
+```
 
-## <a name="development"></a> Development
+### .kitchen.yml
+
+```yaml
+---
+driver:
+  name: lxd_api
+
+provisioner:
+  name: ansible_playbook
+  roles_path: roles
+
+platforms:
+  - name: oreno-ubuntu-14.04
+    driver_plugin: lxd_api
+    driver_config:
+      container_image: oreno-ubuntu-image
+      container_name: kitchen-container
+      username: kitchen
+
+suites:
+  - name: default
+    provisioner:
+      playbook: default.yml
+      hosts: default
+
+verifier:
+  name: shell
+  command: rspec -c -f d -I serverspec serverspec/common_spec.rb
+```
+
+## Let's tasting...
+
+```sh
+$ kitchen create
+$ kitchen converge
+$ kitchen verify
+$ kitchen destroy
+```
+
+## Development
 
 * Source hosted at [GitHub][repo]
 * Report issues/questions/feature requests on [GitHub Issues][issues]
@@ -47,11 +92,11 @@ example:
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-## <a name="authors"></a> Authors
+## Authors
 
-Created and maintained by [TODO: Write your name][author] (<inokara@gmail.com>)
+Created and maintained by inokappa
 
-## <a name="license"></a> License
+## License
 
 Apache 2.0 (see [LICENSE][license])
 
