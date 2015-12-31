@@ -33,7 +33,7 @@ module Kitchen
         sleep 5
 
         puts "Run Container..."
-        container.run_container
+        container.state_container("start")
 
         puts "Set Username and Upload Public key..."
         unless config[:username] == "root"
@@ -54,7 +54,7 @@ module Kitchen
 
       def destroy(state)
         puts "Destroy Container..."
-        container.stop_container
+        container.state_container("stop")
       end
 
       private
