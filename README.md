@@ -1,4 +1,5 @@
 # Kitchen::Driver::LxdApi
+[![Build Status](https://travis-ci.org/inokappa/kitchen-lxd_api.svg)](https://travis-ci.org/inokappa/kitchen-lxd_api)
 
 A Test Kitchen Driver for LXD REST API.
 

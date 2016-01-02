@@ -63,7 +63,7 @@ module Kitchen
 
         puts "Describe Container..."
         metadata = container.describe_container
-        state[:state] = metadata['status']['status']
+        state[:status] = metadata['status']['status']
         state[:ephemeral] = metadata['ephemeral'].to_s
         metadata['status']['ips'].each { |ip| state[:hostname] = ip['address'] if ip['interface'] == "eth0" }
       end
