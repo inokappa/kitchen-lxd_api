@@ -3,6 +3,11 @@
 
 A Test Kitchen Driver for LXD REST API.
 
+## Attention
+
+- Made for myself
+- Testing and implementation a not enough
+
 ## Reference
 
 - [LXD REST API](https://github.com/lxc/lxd/blob/master/specs/rest-api.md)
@@ -11,7 +16,6 @@ A Test Kitchen Driver for LXD REST API.
 ## Requirements
 
 - [LXD](https://linuxcontainers.org/)
-- [puppetlabs/net_http_unix](https://github.com/puppetlabs/net_http_unix)
 - [Oreno LXD REST API Client](https://github.com/inokappa/oreno_lxdapi)
 
 ## Installation and Setup
