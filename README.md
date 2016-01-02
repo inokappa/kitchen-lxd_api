@@ -3,28 +3,25 @@
 
 A Test Kitchen Driver for LXD REST API.
 
+## Reference
+
+- [LXD REST API](https://github.com/lxc/lxd/blob/master/specs/rest-api.md)
+- [bradenwright/kitchen-lxd_cli](https://github.com/bradenwright/kitchen-lxd_cli)
+
 ## Requirements
 
+- [LXD](https://linuxcontainers.org/)
+- [puppetlabs/net_http_unix](https://github.com/puppetlabs/net_http_unix)
 - [Oreno LXD REST API Client](https://github.com/inokappa/oreno_lxdapi)
 
 ## Installation and Setup
 
-### Install Oreno LXD REST API Client
-
-```sh
-$ git clone https://github.com/inokappa/oreno_lxdapi.git
-$ cd oreno_lxdapi
-$ bundle install
-$ rake install:local
-```
-
-### Install kitchen driver for LXD REST API
+### Install kitchen driver
 
 ```sh
 $ git clone https://github.com/inokappa/kitchen-lxd_api.git
 $ cd kitchen-lxd_api
 $ bundle install
-$ rake install:local
 ```
 
 ## Configuration
@@ -49,6 +46,8 @@ driver:
 provisioner:
   name: ansible_playbook
   roles_path: roles
+  # require_chef_for_busser: false
+  # require_ruby_for_busser: true
 
 platforms:
   - name: oreno-ubuntu-14.04
@@ -56,7 +55,16 @@ platforms:
     driver_config:
       container_image: oreno-ubuntu-image
       container_name: kitchen-container
-      username: kitchen
+      #
+      # Optional
+      #
+      # username: kitchen
+      # architecture: 2
+      # profiles: ["default"]
+      # ephemeral: false
+      # limits_cpu: "1"
+      # timeout: 30
+      # force: true
 
 suites:
   - name: default
@@ -67,6 +75,7 @@ suites:
 verifier:
   name: shell
   command: rspec -c -f d -I serverspec serverspec/common_spec.rb
+
 ```
 
 ## Let's tasting...
