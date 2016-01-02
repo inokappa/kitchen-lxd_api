@@ -9,7 +9,9 @@ module Kitchen
 
     #
     # LxdApi driver for Kitchen.
+    # Be unrefined!!!!!!!! :-<
     #
+
     class LxdApi < Kitchen::Driver::Base
       kitchen_driver_api_version 2
 
@@ -24,16 +26,27 @@ module Kitchen
 
 
       def create(state)
-        #
-        # Be unrefined!!!!!!!!
+
+        # config[:architecture] = 2
+        # config[:profiles] = ["default"]
+        # config[:ephemeral] = true
+        # config[:limits_cpu] = "1"
         #
         puts "Create Container..."
-        container.create_container
+        container.create_container(
+          :architecture => config[:architecture],
+          :profiles => config[:profiles],
+          :ephemeral => config[:ephemeral],
+          :limits_cpu => config[:limits_cpu]
+        )
 
         sleep 5
 
+        # config[:timeout] = 30
+        # config[:force] = true
+        # 
         puts "Run Container..."
-        container.state_container("start")
+        container.state_container("start", :timeout => config[:timeout], :force => config[:force])
 
         puts "Set Username and Upload Public key..."
         unless config[:username] == "root"
@@ -48,13 +61,25 @@ module Kitchen
         container.run_lxc_exec("chmod 700 #{set_user_home_dir_path(state[:username])}/.ssh")
         container.run_lxc_exec("chmod 600 #{set_ssh_authorized_keys_path(state[:username])}")
 
-        puts "Get Container IP address..."
-        state[:hostname] = container.check_container_status[1]
+        puts "Describe Container..."
+        metadata = container.describe_container
+        state[:state] = metadata['status']['status']
+        state[:ephemeral] = metadata['ephemeral'].to_s
+        metadata['status']['ips'].each { |ip| state[:hostname] = ip['address'] if ip['interface'] == "eth0" }
       end
 
       def destroy(state)
+
+        # config[:timeout] = 30
+        # config[:force] = true
+        # 
         puts "Destroy Container..."
-        container.state_container("stop")
+        if state[:ephemeral] == "true"
+          container.state_container("stop", :timeout => config[:timeout], :force => config[:force])
+        elsif state[:ephemeral] == "false"
+          container.state_container("stop", :timeout => config[:timeout], :force => config[:force])
+          container.delete_container
+        end
       end
 
       private
