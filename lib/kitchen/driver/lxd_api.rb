@@ -56,7 +56,7 @@ module Kitchen
 
         puts "Set Username and Upload Public key..."
         unless config[:username] == "root"
-          create_user 
+          create_user
         end
         state[:username] = config[:username]
         container.run_lxc_exec(
@@ -69,7 +69,8 @@ module Kitchen
 
         puts "Change Permission..."
         container.run_lxc_exec(
-          "chown -R #{state[:username]}:#{state[:username]} #{set_user_home_dir_path(state[:username])}/.ssh"
+          "chown -R #{state[:username]}:#{state[:username]} \
+          #{set_user_home_dir_path(state[:username])}/.ssh"
         )
         container.run_lxc_exec(
           "chmod 700 #{set_user_home_dir_path(state[:username])}/.ssh"
@@ -82,19 +83,31 @@ module Kitchen
         metadata = container.describe_container
         state[:status] = metadata['status']['status']
         state[:ephemeral] = metadata['ephemeral'].to_s
-        metadata['status']['ips'].each { |ip| state[:hostname] = ip['address'] if ip['interface'] == "eth0" }
+        metadata['status']['ips'].each do |ip|
+          if ip['interface'] == "eth0"
+            state[:hostname] = ip['address']
+          end
+        end
       end
 
       def destroy(state)
 
         # config[:timeout] = 30
         # config[:force] = true
-        # 
+        #
         puts "Destroy Container..."
         if state[:ephemeral] == "true"
-          container.state_container("stop", :timeout => config[:timeout], :force => config[:force])
+          container.state_container(
+            "stop",
+            :timeout => config[:timeout],
+            :force => config[:force]
+          )
         elsif state[:ephemeral] == "false"
-          container.state_container("stop", :timeout => config[:timeout], :force => config[:force])
+          container.state_container(
+            "stop",
+            :timeout => config[:timeout],
+            :force => config[:force]
+          )
           container.delete_container
         end
       end
@@ -102,7 +115,11 @@ module Kitchen
       private
 
       def container
-        OrenoLxdapi::Client.new(config[:uri], config[:container_image], config[:container_name]) 
+        OrenoLxdapi::Client.new(
+          config[:uri],
+          config[:container_image],
+          config[:container_name]
+        ) 
       end
       
       def set_ssh_authorized_keys_path(username)
@@ -122,8 +139,12 @@ module Kitchen
       end
 
       def create_user
-        container.run_lxc_exec("useradd -m -G sudo #{config[:username]} -s /bin/bash")
-        container.run_lxc_exec("sh -c \"echo '#{config[:username]} ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers\"")
+        container.run_lxc_exec(
+          "useradd -m -G sudo #{config[:username]} -s /bin/bash"
+        )
+        container.run_lxc_exec(
+          "sh -c \"echo '#{config[:username]} ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers\""
+        )
       end
 
     end
