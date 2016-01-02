@@ -106,6 +106,7 @@ module Kitchen
             :timeout => config[:timeout],
             :force => config[:force]
           )
+          sleep 5
           container.delete_container
         end
       end
