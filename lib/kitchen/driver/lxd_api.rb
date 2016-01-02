@@ -15,7 +15,6 @@ module Kitchen
     class LxdApi < Kitchen::Driver::Base
       kitchen_driver_api_version 2
 
-      # default: unix:///var/lib/lxd/unix.socket
       default_config :uri, "unix:///var/lib/lxd/unix.socket"
 
       default_config :container_image, nil
@@ -69,8 +68,7 @@ module Kitchen
 
         puts "Change Permission..."
         container.run_lxc_exec(
-          "chown -R #{state[:username]}:#{state[:username]} \
-          #{set_user_home_dir_path(state[:username])}/.ssh"
+          "chown -R #{state[:username]}:#{state[:username]} #{set_user_home_dir_path(state[:username])}/.ssh"
         )
         container.run_lxc_exec(
           "chmod 700 #{set_user_home_dir_path(state[:username])}/.ssh"
@@ -143,8 +141,7 @@ module Kitchen
           "useradd -m -G sudo #{config[:username]} -s /bin/bash"
         )
         container.run_lxc_exec(
-          "sh -c \
-          \"echo '#{config[:username]} ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers\""
+          "sh -c \"echo '#{config[:username]} ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers\""
         )
       end
 

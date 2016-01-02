@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "pry"
 
-  spec.add_development_dependency 'cane'
-  spec.add_development_dependency 'tailor'
-  spec.add_development_dependency 'countloc'
+  #spec.add_development_dependency 'cane'
+  #spec.add_development_dependency 'tailor'
+  #spec.add_development_dependency 'countloc'
 end
