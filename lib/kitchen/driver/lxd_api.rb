@@ -27,6 +27,7 @@ module Kitchen
 
       def create(state)
 
+        #
         # config[:architecture] = 2
         # config[:profiles] = ["default"]
         # config[:ephemeral] = true
@@ -42,9 +43,10 @@ module Kitchen
 
         sleep 5
 
+        #
         # config[:timeout] = 30
         # config[:force] = true
-        # 
+        #
         puts "Run Container..."
         container.state_container("start", :timeout => config[:timeout], :force => config[:force])
 
