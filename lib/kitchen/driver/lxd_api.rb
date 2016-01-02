@@ -119,9 +119,9 @@ module Kitchen
           config[:uri],
           config[:container_image],
           config[:container_name]
-        ) 
+        )
       end
-      
+
       def set_ssh_authorized_keys_path(username)
         if username == "root"
           return "/root" + "#{config[:authorized_keys_path]}"
@@ -143,7 +143,8 @@ module Kitchen
           "useradd -m -G sudo #{config[:username]} -s /bin/bash"
         )
         container.run_lxc_exec(
-          "sh -c \"echo '#{config[:username]} ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers\""
+          "sh -c \
+          \"echo '#{config[:username]} ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers\""
         )
       end
 
