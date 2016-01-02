@@ -48,20 +48,35 @@ module Kitchen
         # config[:force] = true
         #
         puts "Run Container..."
-        container.state_container("start", :timeout => config[:timeout], :force => config[:force])
+        container.state_container(
+          "start",
+          :timeout => config[:timeout],
+          :force => config[:force]
+        )
 
         puts "Set Username and Upload Public key..."
         unless config[:username] == "root"
           create_user 
         end
         state[:username] = config[:username]
-        container.run_lxc_exec("mkdir #{set_user_home_dir_path(state[:username])}/.ssh")
-        container.file_upload(config[:public_key_path], set_ssh_authorized_keys_path(state[:username]))
+        container.run_lxc_exec(
+          "mkdir #{set_user_home_dir_path(state[:username])}/.ssh"
+        )
+        container.file_upload(
+          config[:public_key_path],
+          set_ssh_authorized_keys_path(state[:username])
+        )
 
         puts "Change Permission..."
-        container.run_lxc_exec("chown -R #{state[:username]}:#{state[:username]} #{set_user_home_dir_path(state[:username])}/.ssh")
-        container.run_lxc_exec("chmod 700 #{set_user_home_dir_path(state[:username])}/.ssh")
-        container.run_lxc_exec("chmod 600 #{set_ssh_authorized_keys_path(state[:username])}")
+        container.run_lxc_exec(
+          "chown -R #{state[:username]}:#{state[:username]} #{set_user_home_dir_path(state[:username])}/.ssh"
+        )
+        container.run_lxc_exec(
+          "chmod 700 #{set_user_home_dir_path(state[:username])}/.ssh"
+        )
+        container.run_lxc_exec(
+          "chmod 600 #{set_ssh_authorized_keys_path(state[:username])}"
+        )
 
         puts "Describe Container..."
         metadata = container.describe_container
