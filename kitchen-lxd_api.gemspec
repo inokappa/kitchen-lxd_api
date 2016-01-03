@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['inokara at gmail.com']
   spec.description   = %q{A Test Kitchen Driver for LxdApi}
   spec.summary       = spec.description
-  spec.homepage      = ''
+  spec.homepage      = 'https://github.com/inokappa/kitchen-lxd_api'
   spec.license       = 'Apache 2.0'
 
   spec.files         = `git ls-files`.split($/)
